@@ -42,13 +42,13 @@ public class DashSampler extends VideoStreamingSampler<Manifest, DashMediaSegmen
     masterUri = manifest.getUri();
 
     MediaStreamSelector<MediaRepresentation> alternativeMediaSelector =
-        new MediaStreamSelector<MediaRepresentation>() {
-          @Override
-          public MediaRepresentation findMatchingVariant(List<MediaRepresentation> variants) {
-            return findVariantPerAttribute(MediaRepresentation::getBandwidth, bandwidthSelector,
-                variants);
-          }
-        };
+    new MediaStreamSelector<MediaRepresentation>() {
+      @Override
+      public MediaRepresentation findMatchingVariant(List<MediaRepresentation> variants) {
+        return findVariantPerAttribute(MediaRepresentation::getBandwidth, bandwidthSelector,
+            variants);
+      }
+    };
 
     MediaPlayback videoPlayback = new MediaPlayback(manifest, VIDEO_TYPE_NAME,
         new VideoStreamSelector<>(bandwidthSelector, MediaRepresentation::getBandwidth,
@@ -67,7 +67,7 @@ public class DashSampler extends VideoStreamingSampler<Manifest, DashMediaSegmen
     }
     complementTracks.add(subtitlesPlayback);
     try {
-      /*
+     /*
       we use this variable to avoid requesting manifest before even trying downloading segments due
       to potential low min update period and time taken downloading and processing manifest
        */
@@ -93,7 +93,7 @@ public class DashSampler extends VideoStreamingSampler<Manifest, DashMediaSegmen
             complementTrack.updatePeriod(period);
           }
         }
-
+        Thread.sleep(1000);
         mediaPlayback.downloadNextSegment();
         double playedSeconds = mediaPlayback.getPlayedTimeSeconds();
         if (playSeconds > 0 && playSeconds < playedSeconds) {
@@ -239,6 +239,7 @@ public class DashSampler extends VideoStreamingSampler<Manifest, DashMediaSegmen
         return;
       }
       while (consumedSeconds < untilTimeSecond && segmentBuilder.hasNext()) {
+        Thread.sleep(1000);
         downloadNextSegment();
       }
     }
@@ -246,7 +247,7 @@ public class DashSampler extends VideoStreamingSampler<Manifest, DashMediaSegmen
     private boolean hasEnded() {
       return playedRequestedTime()
           || segmentBuilder == null || (!segmentBuilder.hasNext() && !periods.hasNext() &&
-          (!manifest.isDynamic() || manifest.getMinimumUpdatePeriod() == null));
+              (!manifest.isDynamic() || manifest.getMinimumUpdatePeriod() == null));
     }
 
     private boolean hasContents() {
@@ -257,7 +258,7 @@ public class DashSampler extends VideoStreamingSampler<Manifest, DashMediaSegmen
       return manifest.isDynamic()
           && manifest.getMinimumUpdatePeriod() != null
           && (manifest.getReloadTimeMillis(timeMachine.now()) <= 0
-          || !segmentBuilder.hasNext() && !periods.hasNext());
+              || !segmentBuilder.hasNext() && !periods.hasNext());
     }
 
   }

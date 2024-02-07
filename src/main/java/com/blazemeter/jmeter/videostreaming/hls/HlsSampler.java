@@ -83,6 +83,7 @@ public class HlsSampler extends VideoStreamingSampler<Playlist, MediaSegment> {
     try {
       mediaPlayback.downloadInitializationSegment();
       while (!mediaPlayback.hasEnded()) {
+        Thread.sleep(1000);
         mediaPlayback.downloadNextSegment();
         double playedSeconds = mediaPlayback.getPlayedTimeSeconds();
         if (playSeconds > 0 && playSeconds < playedSeconds) {
@@ -257,6 +258,7 @@ public class HlsSampler extends VideoStreamingSampler<Playlist, MediaSegment> {
 
       try {
         while (consumedSeconds <= untilTimeSecond) {
+          Thread.sleep(1000);
           downloadNextSegment();
         }
       } catch (PlaylistParsingException | PlaylistDownloadException e) {
